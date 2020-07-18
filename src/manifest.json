@@ -1,0 +1,37 @@
+{
+    "name": "Player Assistant",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "icons": {
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "128": "images/icon128.png"
+    },
+    "browser_action": {
+        "default_icon": {
+            "16": "images/action_off.png"
+        },
+        "default_title": "Player Assistant"
+    },
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "content_scripts": [
+        {
+            "matches":["http://*/*", "https://*/*"],
+            "exclude_matches": ["https://*.netflix.com/*", "https://*.youtube.com/*"],
+            "js": ["js/pa.js"],
+            "run_at": "document_start"
+        },
+        {
+            "matches": ["https://*.netflix.com/*"],
+            "js": ["js/inject.js"],
+            "run_at": "document_idle"
+        }
+    ],
+    "web_accessible_resources": ["js/pa4nf.js"],
+    "externally_connectable": {
+        "matches": ["https://*.netflix.com/*"]
+    },
+    "permissions": ["activeTab", "storage"]
+}

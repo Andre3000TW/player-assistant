@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <style>
+            html {
+                width: 280px;
+            }
+            div {
+                position: relative;
+                height: 40px;
+            }
+            label {
+                position: absolute;
+                font-size: 2em;
+                font-weight: bold;
+            }
+            progress {
+                position: absolute;
+                left: 90px;
+                height: 32px;
+                border-radius: 0px;
+            }
+            progress:hover:after {
+                content: attr(data-label);
+                font-size: 1.5em;
+                font-weight: bold;
+                color: white;
+                position:absolute;
+                top: 5px;
+            }
+            progress::-webkit-progress-bar {
+                background-color: #aaa;
+            }
+            progress::-webkit-progress-value {
+                background-color: blue;
+            }
+            button {
+                position: absolute;
+                top: 7px;
+                left: 220px;
+                border-radius: 10px;
+            }
+            #time_pb:hover:after {
+                left: 25px;
+            }
+            #speed_pb:hover:after {
+                left: 50px
+            }
+            #volume_pb:hover:after {
+                left: 40px;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div>
+            <label for="time">Time</label>
+            <progress id="time_pb" max="100" value="" data-label=""></progress>
+            <button id="time_btn" contenteditable="true"></button>
+        </div>
+        <div>
+            <label for="speed">Speed</label>
+            <progress id="speed_pb" max="100" value="" data-label=""></progress>
+            <button id="speed_btn" contenteditable="true"></button>
+        </div>
+        <div>
+            <label for="volume">Volume</label>
+            <progress id="volume_pb" max="100" value="" data-label=""></progress>
+            <button id="volume_btn" contenteditable="true"></button>
+        </div>
+        <script src="js/popup.js"></script>
+    </body>
+</html>
