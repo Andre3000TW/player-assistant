@@ -2,8 +2,8 @@
 Player Assistant is a **Chrome extension** which acts as an auxiliary tool for **video watching**. Because not every video player provides the same keyboard shortcuts, the goal of Player Assistant is to integrate common shortcuts of these players, make every video player can have the same integrated features, and give users a better viewing experience.
 
 # Installation
-### Download and install it from Chrome Web Store
-[![install-on-chrome-web-store](./media/install-on-chrome-web-store.jpg)](https://chrome.google.com/webstore/detail/player-assistant/igdagoipdgdcidbkflnildofndcbnfff?hl=zh-TW&authuser=1)
+### Install through Chrome Web Store
+[![install-on-chrome-web-store](./media/install-on-chrome-web-store.png)](https://chrome.google.com/webstore/detail/player-assistant/igdagoipdgdcidbkflnildofndcbnfff?hl=zh-TW&authuser=1)
 
 # Usage
 ### Enable Player Assistant
