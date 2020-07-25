@@ -2,18 +2,14 @@
 Player Assistant is a **Chrome extension** which acts as an auxiliary tool for **video watching**. Because not every video player provides the same keyboard shortcuts, the goal of Player Assistant is to integrate common shortcuts of these players, make every video player can have the same integrated features, and give users a better viewing experience.
 
 # Installation
-1. Go to `chrome://extensions`
-2. Enable the **Developer mode**
-3. Click **Load unpacked** button
-4. Navigate to the directory of Player Assitant
-5. You are all done!
+<img src="./media/install-on-chrome-web-store.jpg" style="border-radius: 30px;"  width="200" height="114"/>
 
 # Usage
 ### Enable Player Assistant
 There are 3 cases for enabling Player Assistant.
 + **Normal websites:** Click the video to enable Player Assistant. Note that in this case, Player Assistant is activated only when the video is selected. Also, Player Assitant do NOT work on [Youtube](https://www.youtube.com).
 + **Netflix:** Go to any of the videos on Netflix and Player Assistant will be enabled automatically.
-+ **Cross-origin videos:** When the extension icon changes to [![action_failed](./src/images/action_failed.png?raw=true)](#pin-the-extension), which means that this page **may** contain cross-origin videos. And because of the **[same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy)**, Player Assistant can NOT be enabled by this extension. However, you can still follow the steps below to enable it. But note that in this case, you can NOT change offsets by the [popup window](#popup-window).
++ **Cross-origin videos:** When the extension icon changes to [![action_failed](./source/images/action_failed.png?raw=true)](#pin-the-extension), which means that this page **may** contain cross-origin videos. And because of the **[same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy)**, Player Assistant can NOT be enabled by this extension. However, you can still follow the steps below to enable it. But note that in this case, you can NOT change offsets by the [popup window](#popup-window).
     + Press <kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>c</kbd> and then click the video.
     + Paste the code in **[pa4cross-origin](./pa4cross-origin.js)** to `Chrome DevTools Console` and press <kbd>enter</kbd>. Or save it as a snippet on `Chrome DevTools Sources` so you won't need to copy it every time you want to enable Player Assistant.
     + You will see *"PA has been enabled."* on the console then you are all done.
