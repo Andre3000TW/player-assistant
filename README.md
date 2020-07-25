@@ -8,7 +8,7 @@ Player Assistant is a **Chrome extension** which acts as an auxiliary tool for *
 # Usage
 ### Enable Player Assistant
 There are 3 cases for enabling Player Assistant.
-+ **Normal websites:** Click the video to enable Player Assistant. Note that in this case, Player Assistant is activated only when the video is selected. Also, Player Assitant do NOT work on [Youtube](https://www.youtube.com).
++ **Normal websites:** Click the video to enable Player Assistant. Note that in this case, Player Assistant is activated only when the video is selected. Also, Player Assitant does NOT work on Youtube.
 + **Netflix:** Go to any of the videos on Netflix and Player Assistant will be enabled automatically.
 + **Cross-origin videos:** When the extension icon changes to [![action_failed](./source/images/action_failed.png?raw=true)](#pin-the-extension), which means that this page **may** contain cross-origin videos. And because of the **[same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy)**, Player Assistant can NOT be enabled by this extension. However, you can still follow the steps below to enable it. But note that in this case, you can NOT change offsets by the [popup window](#popup-window).
     + Press <kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>c</kbd> and then click the video.
