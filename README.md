@@ -27,7 +27,7 @@ When Player Assistant is enabled and the video is selected(for normal websites),
     | <kbd>d</kbd>              | Skip forward(5 seconds in default)        |
     | <kbd>q</kbd>              | Decrease playback speed(0.25x in default) |
     | <kbd>e</kbd>              | Increase playback speed(0.25x in default) |
-    | <kbd>r</kbd>              | Set back to default playback speed(1x)    |
+    | <kbd>r</kbd>              | Reset playback speed to 1.0x              |
     | <kbd>s</kbd>              | Decrease volume(5% in default)            |
     | <kbd>w</kbd>              | Increase volume(5% in default)            |
     | <kbd>space</kbd>          | Play/Pause                                |
