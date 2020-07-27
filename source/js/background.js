@@ -16,11 +16,7 @@ chrome.runtime.onMessage.addListener((req, sender) => {
             chrome.browserAction.setPopup({popup: ''});
             chrome.browserAction.setIcon({path: {"16": "images/action_off.png"}, tabId: sender.tab.id})
         }
-        else if (req.value == 'failed') {
-            tabs_status[sender.tab.id] = 'failed';
-            chrome.browserAction.setPopup({popup: ''});
-            chrome.browserAction.setIcon({path: {"16": "images/action_failed.png"}, tabId: sender.tab.id})
-        }
+        else console.log('BG received an unknown action request.');
     }
     else console.log('BG received an unknown request.');
 })

@@ -13,7 +13,7 @@ window.addEventListener("message", (event) => {
         chrome.storage.local.get({ // get back saved/default value
             time_offset: 5,
             speed_offset: 0.25,
-            volume_offset: 0.05
+            volume_offset: 0.10
         }, (storage) => {
             window.postMessage({
                 target: 'pa4nf',

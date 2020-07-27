@@ -63,7 +63,7 @@ const initButton = () => {
     chrome.storage.local.get({
         time_offset: 5,
         speed_offset: 0.25,
-        volume_offset: 0.05
+        volume_offset: 0.10
     }, (storage) => {
         time_btn.innerHTML = storage.time_offset;
         speed_btn.innerHTML = storage.speed_offset;

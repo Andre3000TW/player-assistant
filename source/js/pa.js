@@ -1,14 +1,25 @@
 'use strict';
 // event handler for 'play'/'pause'
 const detectPlayPauseChange = () => {
-    if (is_intercepted['play'] === undefined) is_intercepted['play'] = true;
-    else is_intercepted['play'] = undefined;
+    if (play_timer) {
+        clearTimeout(play_timer);
+        play_timer = null;
+    }
 }
 
 // event handler for 'fullscreenchange'/'webkitfullscreenchange'
 const detectFullscreenChange = () => {
-    if (is_intercepted['fullscreen'] === undefined) is_intercepted['fullscreen'] = true;
-    else is_intercepted['fullscreen'] = undefined;
+    if (fullscreen_timer) {
+        clearTimeout(fullscreen_timer);
+        fullscreen_timer = null;
+    }
+}
+
+const detectVolumechangeChange = () => {
+    if (mute_timer) {
+        clearTimeout(mute_timer);
+        mute_timer = null;
+    }
 }
 
 // event handler for 'progress'
@@ -53,40 +64,36 @@ const keyboardAction = (event) => { // #functions = 8
         /***** volume up/down *****/
         case 'KeyW':
             if (pa.muted) pa.muted = false;
+
             pa.volume = getValidValue('volume', Math.round((pa.volume + volume_offset) * 100) / 100);
             event.stopImmediatePropagation();
             break;
         case 'KeyS':
             if (pa.muted) pa.muted = false;
+
             pa.volume = getValidValue('volume', Math.round((pa.volume - volume_offset) * 100) / 100);
             event.stopImmediatePropagation();
             break;
         /***** play/pause *****/
         case 'Space':
-            setTimeout(() => {
-                if (is_intercepted['play']) is_intercepted['play'] = undefined;
-                else {
-                    is_intercepted['play'] = false;
-                    if (pa.paused) pa.play();
-                    else pa.pause();
-                }
-            }, timeout);
+            play_timer = setTimeout(() => {
+                if (pa.paused) pa.play();
+                else pa.pause();
+            }, short_timeout);
             event.preventDefault(); // prevent from scrolling down
             break;
         /***** enter/exit fullscreen *****/
         case 'KeyF':
-            setTimeout(() => {
-                if (is_intercepted['fullscreen']) is_intercepted['fullscreen'] = undefined;
-                else {
-                    is_intercepted['fullscreen'] = false;
-                    if (document.fullscreen) document.exitFullscreen();
-                    else pa.requestFullscreen();
-                }
-            }, timeout);
+            fullscreen_timer = setTimeout(() => {
+                if (document.fullscreen) document.exitFullscreen();
+                else pa.requestFullscreen();
+            }, long_timeout);
             break;
         /***** mute/unmute *****/
         case 'KeyM':
-            pa.muted = !pa.muted;
+            mute_timer = setTimeout(() => {
+                pa.muted = !pa.muted;
+            }, short_timeout);
             break;
         /***** start/end *****/
         case 'Home':
@@ -130,7 +137,7 @@ const checkClickedElement = (event) => {
 
         if (video && isClickWithinVideo({x: event.clientX, y: event.clientY}, video.getBoundingClientRect())) {
             if (pa != video) { // enable/update pa
-                initPA();
+                disablePA();
                 enablePA(video);
             }
             else {
@@ -140,7 +147,7 @@ const checkClickedElement = (event) => {
 
             break;
         }
-    }
+    }  
 }
 
 const isClickWithinVideo = (click_coord, video_rect) => {
@@ -151,38 +158,46 @@ const isClickWithinVideo = (click_coord, video_rect) => {
     else return false;
 }
 
-const initPA = () => {
-    is_intercepted['play'] = false;
-    is_intercepted['fullscreen'] = false;
-
+const disablePA = () => {
     if (pa) {
         pa.removeEventListener('play', detectPlayPauseChange, false);
         pa.removeEventListener('pause', detectPlayPauseChange, false);
+        pa.removeEventListener('volumechange', detectVolumechangeChange, false);
         document.removeEventListener('fullscreenchange', detectFullscreenChange, false);
         document.removeEventListener('webkitfullscreenchange', detectFullscreenChange, false);
         pa.removeEventListener('progress', unstuck, false);
-        pa.removeEventListener('keydown', keyboardAction, false);
+
+        if (/https:\/\/(www\.)?youtube\.com\/.*/.test(window.location.href)) {
+            document.getElementsByTagName('ytd-player')[0].addEventListener('keydown', keyboardAction, false);
+        }
+        else pa.removeEventListener('keydown', keyboardAction, false);
     }
 }
 
 const enablePA = (target) => {
-    console.log('PA has been enabled/updated');
     pa = target;
 
     pa.addEventListener('play', detectPlayPauseChange, false);
     pa.addEventListener('pause', detectPlayPauseChange, false);
+    pa.addEventListener('volumechange', detectVolumechangeChange, false);
     document.addEventListener('fullscreenchange', detectFullscreenChange, false);
     document.addEventListener('webkitfullscreenchange', detectFullscreenChange, false);
     pa.addEventListener('progress', unstuck, false);
-
-    pa.setAttribute('tabindex', '0'); // make pa be selectable
-    pa.addEventListener('keydown', keyboardAction, false);
+    
+    if (/https:\/\/(www\.)?youtube\.com\/.*/.test(window.location.href)) {
+        document.getElementsByTagName('ytd-player')[0].addEventListener('keydown', keyboardAction, false);
+    }
+    else {
+        pa.setAttribute('tabindex', '0'); // make pa be selectable
+        pa.addEventListener('keydown', keyboardAction, false);
+    }
     
     chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'off' });
     setTimeout(() => {
         pa.focus();
         chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'on'});
-    }, timeout);
+        console.log('PA has been enabled/updated');
+    }, short_timeout);
 }
 
 let pa = null;
@@ -191,8 +206,11 @@ let time_offset = 0;
 let speed_offset = 0;
 let volume_offset = 0;
 
-const timeout = 200;
-let is_intercepted = { 'play': false, 'fullscreen': false};
+const short_timeout = 200;
+const long_timeout = 300;
+let play_timer = null;
+let fullscreen_timer = null;
+let mute_timer = null;
 
 // receive msg('ask'/'change offset') from popup
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
@@ -219,7 +237,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
 chrome.storage.local.get({ // init offset
     time_offset: 5,
     speed_offset: 0.25,
-    volume_offset: 0.05
+    volume_offset: 0.10
 }, (storage) => {
     time_offset = storage.time_offset;
     speed_offset = storage.speed_offset;
@@ -227,39 +245,5 @@ chrome.storage.local.get({ // init offset
 });
 
 window.addEventListener('load', () => {
-    let video_count = 0;
-    let added_frames = [];
-
     window.addEventListener('click', checkClickedElement, true);
-    video_count += window.document.getElementsByTagName('video').length;
-    for (let i = 0; i < frames.length; i++) { // for frames
-        try {
-            frames[i].addEventListener('click', checkClickedElement, true);
-            added_frames.push(frames[i]);
-        }
-        catch (exception) {
-            console.log(exception.message);
-        }
-    }
-
-    setTimeout(() => { // check if cross-origin
-        let is_cross_origin = false;
-        for (let i = 0; i < frames.length; i++) { // for frames
-            try {
-                video_count += frames[i].document.getElementsByTagName('video').length;
-            }
-            catch (exception) {
-                is_cross_origin = true;
-                console.log(exception.message);
-            }
-        }
-
-        if (video_count == 0 && is_cross_origin) {
-            chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'failed'});
-            // window.removeEventListener('click', checkClickedElement, true);
-            // for (let iframe of added_frames) {
-            //     iframe.removeEventListener('click', checkClickedElement, true);
-            // }
-        }
-    }, 3000);
-}, false)
+});

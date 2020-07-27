@@ -19,7 +19,7 @@ window.addEventListener('popstate', () => {
 // event handler for 'locationchange'
 const init = () => {
     window.postMessage({target: 'inject', msg: 'action', value: 'off'}, "*");
-    if (!/https:\/\/(www\.)netflix\.com\/watch\/.*/.test(window.location.href)) return; // not in the watch page
+    if (!/https:\/\/(www\.)?netflix\.com\/watch\/.*/.test(window.location.href)) return; // not in the watch page
 
     let interval_id = setInterval(() => {
         pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[0]);
@@ -33,7 +33,7 @@ const init = () => {
 // event handler for 'keydown'
 const keyboardAction = (event) => { // #functions = 7
     try {
-        if (!/https:\/\/(www\.)netflix\.com\/watch\/.*/.test(window.location.href)) return;
+        if (!/https:\/\/(www\.)?netflix\.com\/watch\/.*/.test(window.location.href)) return;
         else if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) return;
         else;
 
@@ -62,6 +62,8 @@ const keyboardAction = (event) => { // #functions = 7
                 pa.setVolume(getValidValue('volume', Math.round((pa.getVolume() + volume_offset) * 100) / 100));
                 break;
             case 'KeyS':
+                if (document.getElementsByClassName('skip-credits').length != 0) break; // skip intro
+
                 pa.setVolume(getValidValue('volume', Math.round((pa.getVolume() - volume_offset) * 100) / 100));
                 break;
             /***** next episode *****/
@@ -76,11 +78,11 @@ const keyboardAction = (event) => { // #functions = 7
                 break;
             /***** switch text track *****/
             case 'KeyC':
-                const lang_set = ['zh-Hant', 'en'];
-                const cur_lang = pa.getTextTrack().bcp47;
+                const lang_set = ['繁體中文', '英文'];
+                const cur_lang = pa.getTextTrack().displayName;
                 for (let index in pa.getTextTrackList()) {
                     let tmp_track = pa.getTextTrackList()[index];
-                    let tmp_lang = tmp_track.bcp47;
+                    let tmp_lang = tmp_track.displayName;
                     if (tmp_lang != cur_lang && lang_set.includes(tmp_lang)) {
                         pa.setTextTrack(tmp_track);
                         break;
