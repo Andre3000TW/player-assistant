@@ -29,7 +29,7 @@ When Player Assistant is enabled and the video is selected(for normal websites),
     | <kbd>0</kbd>-<kbd>9</kbd> | Go to 0% - 90% of video                    |
 
 + **Additional** shortcuts for **Netflix**\
-*(Note: All of the original Netflix shortcuts are **still available**. You can still use <kbd>s</kbd> to skip intro.)*
+*(Note: All of the original Netflix shortcuts are **still available**. You can still use <kbd>s</kbd> to skip intro .)*
     | Shortcut                  | Action                                                  |
     | --------------------------|---------------------------------------------------------|
     | <kbd>n</kbd>              | Play next episode(if available)                         |
