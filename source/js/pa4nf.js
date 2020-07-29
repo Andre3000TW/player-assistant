@@ -22,8 +22,8 @@ const init = () => {
     if (!/https:\/\/(www\.)?netflix\.com\/watch\/.*/.test(window.location.href)) return; // not in the watch page
 
     let interval_id = setInterval(() => {
-        pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[0]);
-        if (pa !== undefined && pa.isReady()) {
+        video = document.getElementsByTagName('video')[0];
+        if (video !== undefined) {
             window.postMessage({target: 'inject', msg: 'action', value: 'on'}, "*");
             clearInterval(interval_id);
         }
@@ -38,6 +38,7 @@ const keyboardAction = (event) => { // #functions = 7
         else;
 
         pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[0]);
+        video = document.getElementsByTagName('video')[0];
 
         switch (event.code) {
             /***** time forward/rewind *****/
@@ -49,13 +50,13 @@ const keyboardAction = (event) => { // #functions = 7
                 break;
             /***** playback speed fast/slow/default *****/
             case 'KeyE':
-                pa.setPlaybackRate(getValidValue('playbackrate', pa.getPlaybackRate() + speed_offset));
+                video.playbackRate = getValidValue('playbackrate', video.playbackRate + speed_offset);
                 break;
             case 'KeyQ':
-                pa.setPlaybackRate(getValidValue('playbackrate', pa.getPlaybackRate() - speed_offset));
+                video.playbackRate = getValidValue('playbackrate', video.playbackRate - speed_offset);
                 break;
             case 'KeyR':
-                pa.setPlaybackRate(1);
+                video.playbackRate = 1;
                 break;
             /***** volume up/down *****/
             case 'KeyW':
@@ -110,7 +111,7 @@ const keyboardAction = (event) => { // #functions = 7
 const getValidValue = (type, new_value) => {
     let max = 0, min = 0;
 
-    if (type === 'playbackrate') min = 0, max = 2;
+    if (type === 'playbackrate') min = 0, max = 16;
     else min = 0, max = 1; // 'volume'
 
     if (min <= new_value && new_value <= max) {
@@ -124,6 +125,7 @@ const getValidValue = (type, new_value) => {
 
 let vp = netflix.appContext.state.playerApp.getAPI().videoPlayer;
 let pa = null;
+let video = null;
 
 let time_offset = 0;
 let speed_offset = 0;
@@ -149,10 +151,10 @@ window.addEventListener("message", (event) => {
             msg: 'ask',
             value: {
                 cur_time: pa.getCurrentTime() / 1000,
-                cur_speed: pa.getPlaybackRate(),
+                cur_speed: video.playbackRate,
                 cur_volume: pa.getVolume(),
                 duration: pa.getDuration() / 1000,
-                max_speed: 2,
+                max_speed: 16,
                 max_volume: 1,
             }
         }, "*");
