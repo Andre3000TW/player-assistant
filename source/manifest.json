@@ -30,8 +30,5 @@
         }
     ],
     "web_accessible_resources": ["js/pa4nf.js"],
-    "externally_connectable": {
-        "matches": ["https://*.netflix.com/*"]
-    },
-    "permissions": ["activeTab", "storage"]
+    "permissions": ["tabs", "storage"]
 }
