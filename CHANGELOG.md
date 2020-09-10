@@ -1,3 +1,5 @@
+## v1.1.1
++ Netflix bug fixes
 ## v1.1.0
 + cross-origin videos & Youtube is now available for Player Assistant
 + change default volume offset from 5% to 10%
