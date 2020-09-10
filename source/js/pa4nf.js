@@ -18,13 +18,13 @@ window.addEventListener('popstate', () => {
 
 // event handler for 'locationchange'
 const init = () => {
-    window.postMessage({target: 'inject', msg: 'action', value: 'off'}, "*");
+    window.postMessage({ target: 'inject', msg: 'action', value: 'off' }, "*");
     if (!/https:\/\/(www\.)?netflix\.com\/watch\/.*/.test(window.location.href)) return; // not in the watch page
 
     let interval_id = setInterval(() => {
         video = document.getElementsByTagName('video')[0];
         if (video !== undefined) {
-            window.postMessage({target: 'inject', msg: 'action', value: 'on'}, "*");
+            window.postMessage({ target: 'inject', msg: 'action', value: 'on' }, "*");
             clearInterval(interval_id);
         }
     }, interval);
@@ -34,10 +34,11 @@ const init = () => {
 const keyboardAction = (event) => { // #functions = 7
     try {
         if (!/https:\/\/(www\.)?netflix\.com\/watch\/.*/.test(window.location.href)) return;
+        else if (getSessionID() == -1) return;
         else if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) return;
         else;
 
-        pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[0]);
+        pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[getSessionID()]);
         video = document.getElementsByTagName('video')[0];
 
         switch (event.code) {
@@ -105,7 +106,17 @@ const keyboardAction = (event) => { // #functions = 7
             pa.seek(pa.getDuration() * 0.1 * parseInt(event.key));
         }
     }
-    catch (exception) {}
+    catch (exception) { }
+}
+
+const getSessionID = () => {
+    for (let index in vp.getAllPlayerSessionIds()) {
+        if (vp.getAllPlayerSessionIds()[index].split('-')[0] == 'watch') {
+            return index;
+        }
+    }
+
+    return -1;
 }
 
 const getValidValue = (type, new_value) => {
@@ -136,16 +147,17 @@ const interval = 100;
 // receive msg('init'/'ask'/'change offset') from inject
 window.addEventListener("message", (event) => {
     if (!event.data.target || event.data.target != 'pa4nf') return;
-    
+
     if (event.data.msg == "init") {
         let storage = event.data.value;
         time_offset = storage.time_offset * 1000;
         speed_offset = storage.speed_offset;
         volume_offset = storage.volume_offset;
-    } 
+    }
     else if (event.data.msg == "ask") {
-        pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[0]);
-        
+        pa = vp.getVideoPlayerBySessionId(vp.getAllPlayerSessionIds()[getSessionID()]);
+        video = document.getElementsByTagName('video')[0];
+
         window.postMessage({
             target: 'inject',
             msg: 'ask',
@@ -167,7 +179,7 @@ window.addEventListener("message", (event) => {
     else console.log('PA4NF received an unknown request.');
 }, false);
 
-window.postMessage({target: 'inject', msg: 'init'}, "*"); // init offset
+window.postMessage({ target: 'inject', msg: 'init' }, "*"); // init offset
 window.addEventListener('keydown', keyboardAction, false);
 window.addEventListener('locationchange', init, false);
 
