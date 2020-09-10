@@ -10,7 +10,7 @@ Player Assistant is a **Chrome extension** which acts as an auxiliary tool for *
 Click the video to enable Player Assistant. Note that Player Assistant is activated only when the video is selected.
     
 ### Keyboard shortcuts
-When Player Assistant is enabled and the video is selected(for normal websites), you can use following shortcuts for a specific action. Also note that some players icon wouldn't react to actions taken by Player Assistant, but that doesn't mean actions haven't been taken.
+When Player Assistant is enabled and the video is selected, you can use following shortcuts for a specific action. Also note that some players icon wouldn't react to actions taken by Player Assistant, but that doesn't mean actions haven't been taken.
 + Shortcuts for **normal websites**
     | Shortcut                  | Action                                     |
     |---------------------------|--------------------------------------------|
@@ -29,7 +29,7 @@ When Player Assistant is enabled and the video is selected(for normal websites),
     | <kbd>0</kbd>-<kbd>9</kbd> | Go to 0% - 90% of video                    |
 
 + **Additional** shortcuts for **Netflix**\
-*(Note: All of the original Netflix shortcuts are **still available**. You can still use <kbd>s</kbd> to skip intro .)*
+*(Note: All of the original Netflix shortcuts are **still available**. You can still use <kbd>s</kbd> to skip intro or recap.)*
     | Shortcut                  | Action                                                  |
     | --------------------------|---------------------------------------------------------|
     | <kbd>n</kbd>              | Play next episode(if available)                         |
