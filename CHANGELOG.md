@@ -1,3 +1,5 @@
+## v1.1.2
++ Netflix next episode button bug fixes
 ## v1.1.1
 + Netflix bug fixes
 ## v1.1.0
