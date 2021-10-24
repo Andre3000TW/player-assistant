@@ -168,7 +168,7 @@ const disablePA = () => {
         pa.removeEventListener('progress', unstuck, false);
 
         if (/https:\/\/(www\.)?youtube\.com\/.*/.test(window.location.href)) {
-            document.getElementsByTagName('ytd-player')[0].addEventListener('keydown', keyboardAction, false);
+            document.getElementsByTagName('ytd-player')[0].removeEventListener('keydown', keyboardAction, false);
         }
         else pa.removeEventListener('keydown', keyboardAction, false);
     }
