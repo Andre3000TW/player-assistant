@@ -71,12 +71,12 @@ const keyboardAction = (event) => { // #functions = 7
             /***** next episode *****/
             case 'KeyN':
                 try {
-                    document.getElementsByClassName('button-nfplayerNextEpisode')[0].click();
+                    const next_btn = document.querySelector('[data-uia="control-next"]') || document.querySelector('[data-uia="next-episode-seamless-button"]');
+                    next_btn.click();
                 }
                 catch (exception) {
                     console.log('No next episode or button has not been loaded.');
                 }
-
                 break;
             /***** switch text track *****/
             case 'KeyC':
