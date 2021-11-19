@@ -1,3 +1,7 @@
+## v1.1.3
++ Auto focus bug fixes
++ Embedded Youtube videos bug fixes
++ Netflix draining next episode button bug fixes
 ## v1.1.2
 + Netflix next episode button bug fixes
 ## v1.1.1
