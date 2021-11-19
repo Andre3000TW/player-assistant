@@ -71,7 +71,7 @@ const keyboardAction = (event) => { // #functions = 7
             /***** next episode *****/
             case 'KeyN':
                 try {
-                    const next_btn = document.querySelector('[data-uia="control-next"]') || document.querySelector('[data-uia="next-episode-seamless-button"]');
+                    const next_btn = document.querySelector('[data-uia="control-next"]') || document.querySelector('[data-uia="next-episode-seamless-button"]') || document.querySelector('[data-uia="next-episode-seamless-button-draining"]');
                     next_btn.click();
                 }
                 catch (exception) {
@@ -122,7 +122,7 @@ const getSessionID = () => {
 const getValidValue = (type, new_value) => {
     let max = 0, min = 0;
 
-    if (type === 'playbackrate') min = 0, max = 16;
+    if (type == 'playbackrate') min = 0, max = 16;
     else min = 0, max = 1; // 'volume'
 
     if (min <= new_value && new_value <= max) {

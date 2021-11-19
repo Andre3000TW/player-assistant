@@ -1,12 +1,4 @@
 'use strict';
-// event handler for 'play'/'pause'
-const detectPlayPauseChange = () => {
-    if (play_timer) {
-        clearTimeout(play_timer);
-        play_timer = null;
-    }
-}
-
 // event handler for 'fullscreenchange'/'webkitfullscreenchange'
 const detectFullscreenChange = () => {
     if (fullscreen_timer) {
@@ -15,6 +7,7 @@ const detectFullscreenChange = () => {
     }
 }
 
+// event handler for 'volumechange'
 const detectVolumechangeChange = () => {
     if (mute_timer) {
         clearTimeout(mute_timer);
@@ -33,11 +26,9 @@ const unstuck = () => {
 
 // event handler for 'keydown'
 const keyboardAction = (event) => { // #functions = 8
-    if (event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) {
-        event.stopImmediatePropagation();
-        return;
-    }
-
+    if (is_last_mouse_pos_not_within_video || isEditing(event.target) ||
+        event.ctrlKey || event.altKey || event.shiftKey || event.metaKey) return;
+    
     switch (event.code) {
         /***** time forward/rewind *****/
         case 'KeyD':
@@ -63,44 +54,47 @@ const keyboardAction = (event) => { // #functions = 8
             break;
         /***** volume up/down *****/
         case 'KeyW':
-            if (pa.muted) pa.muted = false;
+            if (pa.muted) pa.muted = false; // unmute when adjusting volume
 
             pa.volume = getValidValue('volume', Math.round((pa.volume + volume_offset) * 100) / 100);
             event.stopImmediatePropagation();
             break;
         case 'KeyS':
-            if (pa.muted) pa.muted = false;
+            if (pa.muted) pa.muted = false; // unmute when adjusting volume
 
             pa.volume = getValidValue('volume', Math.round((pa.volume - volume_offset) * 100) / 100);
             event.stopImmediatePropagation();
-            break;
-        /***** play/pause *****/
-        case 'Space':
-            play_timer = setTimeout(() => {
-                if (pa.paused) pa.play();
-                else pa.pause();
-            }, short_timeout);
-            event.preventDefault(); // prevent from scrolling down
             break;
         /***** enter/exit fullscreen *****/
         case 'KeyF':
             fullscreen_timer = setTimeout(() => {
                 if (document.fullscreen) document.exitFullscreen();
                 else pa.requestFullscreen();
-            }, long_timeout);
+            }, timeout);
             break;
         /***** mute/unmute *****/
         case 'KeyM':
             mute_timer = setTimeout(() => {
                 pa.muted = !pa.muted;
-            }, short_timeout);
+            }, timeout);
+            break;
+        /***** play/pause *****/
+        case 'Space':
+            if (pa.paused) pa.play();
+            else pa.pause();
+            event.preventDefault(); // prevent from scrolling down
+            event.stopImmediatePropagation();
             break;
         /***** start/end *****/
         case 'Home':
             pa.currentTime = 0;
+            event.preventDefault(); // prevent from scrolling to the top
+            event.stopImmediatePropagation();
             break;
         case 'End':
             pa.currentTime = pa.duration;
+            event.preventDefault(); // prevent from scrolling to the bottom
+            event.stopImmediatePropagation();
             break;
         default: break;
     }
@@ -114,7 +108,7 @@ const keyboardAction = (event) => { // #functions = 8
 const getValidValue = (type, new_value) => {
     let max = 0, min = 0;
 
-    if (type === 'playbackrate') min = 0, max = 16;
+    if (type == 'playbackrate') min = 0, max = 16;
     else min = 0, max = 1; // 'volume'
 
     if (min <= new_value && new_value <= max) {
@@ -124,6 +118,13 @@ const getValidValue = (type, new_value) => {
         if (new_value > max) return max;
         else return min;
     }
+}
+
+const isEditing = (target) => {
+    if (target.nodeName == 'INPUT' || target.contentEditable == 'true') {
+        return true;
+    }
+    else return false;
 }
 
 // event handler for 'click'
@@ -136,17 +137,15 @@ const checkClickedElement = (event) => {
         else ;
 
         if (video && isClickWithinVideo({x: event.clientX, y: event.clientY}, video.getBoundingClientRect())) {
+            is_last_mouse_pos_not_within_video = false;
             if (pa != video) { // enable/update pa
                 disablePA();
                 enablePA(video);
             }
-            else {
-                pa.focus();
-                console.log('Clicked element is within video scope.');
-            }
-
+            else console.log('Clicked element is within video scope.');
             break;
         }
+        else is_last_mouse_pos_not_within_video = true;
     }  
 }
 
@@ -160,55 +159,40 @@ const isClickWithinVideo = (click_coord, video_rect) => {
 
 const disablePA = () => {
     if (pa) {
-        pa.removeEventListener('play', detectPlayPauseChange, false);
-        pa.removeEventListener('pause', detectPlayPauseChange, false);
-        pa.removeEventListener('volumechange', detectVolumechangeChange, false);
-        document.removeEventListener('fullscreenchange', detectFullscreenChange, false);
-        document.removeEventListener('webkitfullscreenchange', detectFullscreenChange, false);
-        pa.removeEventListener('progress', unstuck, false);
+        window.removeEventListener('keydown', keyboardAction, true);
+        document.removeEventListener('fullscreenchange', detectFullscreenChange, true);
+        document.removeEventListener('webkitfullscreenchange', detectFullscreenChange, true);
+        pa.removeEventListener('volumechange', detectVolumechangeChange, true);
+        pa.removeEventListener('progress', unstuck, true);
 
-        if (/https:\/\/(www\.)?youtube\.com\/.*/.test(window.location.href)) {
-            document.getElementsByTagName('ytd-player')[0].removeEventListener('keydown', keyboardAction, false);
-        }
-        else pa.removeEventListener('keydown', keyboardAction, false);
+        chrome.runtime.sendMessage({ target: 'bg', msg: 'action', value: 'off' });
     }
 }
 
-const enablePA = (target) => {
-    pa = target;
+const enablePA = (video) => {
+    pa = video;
 
-    pa.addEventListener('play', detectPlayPauseChange, false);
-    pa.addEventListener('pause', detectPlayPauseChange, false);
-    pa.addEventListener('volumechange', detectVolumechangeChange, false);
-    document.addEventListener('fullscreenchange', detectFullscreenChange, false);
-    document.addEventListener('webkitfullscreenchange', detectFullscreenChange, false);
-    pa.addEventListener('progress', unstuck, false);
+    window.addEventListener('keydown', keyboardAction, true);
+    document.addEventListener('fullscreenchange', detectFullscreenChange, true);
+    document.addEventListener('webkitfullscreenchange', detectFullscreenChange, true);
+    pa.addEventListener('volumechange', detectVolumechangeChange, true);
+    pa.addEventListener('progress', unstuck, true);
     
-    if (/https:\/\/(www\.)?youtube\.com\/.*/.test(window.location.href)) {
-        document.getElementsByTagName('ytd-player')[0].addEventListener('keydown', keyboardAction, false);
-    }
-    else {
-        pa.setAttribute('tabindex', '0'); // make pa be selectable
-        pa.addEventListener('keydown', keyboardAction, false);
-    }
-    
-    chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'off' });
     setTimeout(() => {
-        pa.focus();
         chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'on'});
         console.log('PA has been enabled/updated');
-    }, short_timeout);
+    }, timeout);
 }
 
 let pa = null;
+
+let is_last_mouse_pos_not_within_video = true;
 
 let time_offset = 0;
 let speed_offset = 0;
 let volume_offset = 0;
 
-const short_timeout = 200;
-const long_timeout = 300;
-let play_timer = null;
+const timeout = 300;
 let fullscreen_timer = null;
 let mute_timer = null;
 
