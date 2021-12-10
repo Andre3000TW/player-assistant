@@ -7,7 +7,9 @@ Player Assistant is a **Chrome extension** which acts as an auxiliary tool for *
 
 # Usage
 ### Enable Player Assistant
-Click the video to enable Player Assistant. Note that Player Assistant is activated only when the video is selected.
+Click the video to enable Player Assistant.\
+*(Note: Click within the video itself & Player Assistant is activated only when the video is selected)*
+
     
 ### Keyboard shortcuts
 When Player Assistant is enabled and the video is selected, you can use following shortcuts for a specific action. Also note that some players icon wouldn't react to actions taken by Player Assistant, but that doesn't mean actions haven't been taken.
