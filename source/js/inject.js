@@ -2,7 +2,7 @@
 // create and append script tag
 let script = document.createElement('script');
 script.type = 'text/javascript';
-script.src = chrome.extension.getURL('js/pa4nf.js');
+script.src = chrome.runtime.getURL('js/pa4nf.js');
 document.body.appendChild(script);
 
 // forward msg('init'/'ask'/'change offset') from pa4nf to pa4nf/popup/bg

@@ -1,21 +1,21 @@
 {
     "name": "Player Assistant",
-    "version": "1.1.3",
-    "manifest_version": 2,
+    "version": "1.1.4",
+    "manifest_version": 3,
     "homepage_url": "https://github.com/Andre3000TW/player-assistant",
     "icons": {
         "16": "images/icon16.png",
         "32": "images/icon32.png",
         "128": "images/icon128.png"
     },
-    "browser_action": {
+    "action": {
         "default_icon": {
             "16": "images/action_off.png"
         },
         "default_title": "Player Assistant"
     },
     "background": {
-        "scripts": ["js/background.js"]
+        "service_worker": "js/background.js"
     },
     "content_scripts": [
         {
@@ -29,6 +29,11 @@
             "js": ["js/inject.js"]
         }
     ],
-    "web_accessible_resources": ["js/pa4nf.js"],
+    "web_accessible_resources": [
+        {
+          "resources": ["js/pa4nf.js"],
+          "matches": ["https://*.netflix.com/*"]
+        }
+    ],
     "permissions": ["tabs", "storage"]
 }
