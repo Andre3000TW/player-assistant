@@ -1,3 +1,5 @@
+## v1.1.4
++ Migrated to Manifest V3
 ## v1.1.3
 + Auto focus bug fixes
 + Embedded Youtube videos bug fixes
