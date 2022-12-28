@@ -80,12 +80,10 @@ const keyboardAction = (event) => { // #functions = 7
                 break;
             /***** switch text track *****/
             case 'KeyC':
-                const lang_set = ['繁體中文', '英文'];
-                const cur_lang = pa.getTextTrack().displayName;
-                for (let index in pa.getTextTrackList()) {
-                    let tmp_track = pa.getTextTrackList()[index];
-                    let tmp_lang = tmp_track.displayName;
-                    if (tmp_lang != cur_lang && lang_set.includes(tmp_lang)) {
+                const lang_set = ['zh-Hant', 'en'];
+                const cur_track_bcp47 = pa.getTextTrack().bcp47;
+                for (let tmp_track of pa.getTextTrackList()) {
+                    if (tmp_track.bcp47 != cur_track_bcp47 && lang_set.includes(tmp_track.bcp47)) {
                         pa.setTextTrack(tmp_track);
                         break;
                     }

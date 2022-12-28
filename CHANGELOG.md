@@ -1,3 +1,5 @@
+## v1.1.4.1
++ Netflix caption toggle bug fixes
 ## v1.1.4
 + Migrated to Manifest V3
 ## v1.1.3
