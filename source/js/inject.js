@@ -40,7 +40,7 @@ window.addEventListener("message", (event) => {
             value: event.data.value
         });
     }
-    else console.log('INJECT received an unknown request.');
+    else console.log('[Player Assistant]: INJECT received an unknown request.');
 }, false);
 
 // forward msg('ask'/'change offset') from popup to pa4nf
@@ -50,5 +50,5 @@ chrome.runtime.onMessage.addListener((req) => {
     if (req.msg == 'ask' || req.msg == 'change offset') {
         window.postMessage({target: 'pa4nf', msg: req.msg, for: req.for, value: req.value}, "*");
     }
-    else console.log('INJECT received an unknown request.');
+    else console.log('[Player Assistant]: INJECT received an unknown request.');
 })

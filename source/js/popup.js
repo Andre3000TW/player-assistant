@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => { // init pb & btn
                 if (!req.target || req.target != 'popup') return;
 
                 if (req.msg == 'ask') initProgressBar(req.value);
-                else console.log('POPUP received an unknown request.');
+                else console.log('[Player Assistant]: POPUP received an unknown request.');
             });
         }
     });

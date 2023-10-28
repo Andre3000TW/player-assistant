@@ -8,10 +8,18 @@ const detectFullscreenChange = () => {
 }
 
 // event handler for 'volumechange'
-const detectVolumechangeChange = () => {
+const detectVolumeChange = () => {
     if (mute_timer) {
         clearTimeout(mute_timer);
         mute_timer = null;
+    }
+}
+
+// event handler for 'play/pause'
+const detectPlayPuaseChange = () => {
+    if (play_pause_timer) {
+        clearTimeout(play_pause_timer);
+        play_pause_timer = null;
     }
 }
 
@@ -80,10 +88,11 @@ const keyboardAction = (event) => { // #functions = 8
             break;
         /***** play/pause *****/
         case 'Space':
-            if (pa.paused) pa.play();
-            else pa.pause();
+            play_pause_timer = setTimeout(() => {
+                if (pa.paused) pa.play();
+                else pa.pause();
+            }, timeout);
             event.preventDefault(); // prevent from scrolling down
-            event.stopImmediatePropagation();
             break;
         /***** start/end *****/
         case 'Home':
@@ -142,7 +151,7 @@ const checkClickedElement = (event) => {
                 disablePA();
                 enablePA(video);
             }
-            else console.log('Clicked element is within video scope.');
+            else console.log('[Player Assistant]: Clicked element is within video scope.');
             break;
         }
         else is_last_mouse_pos_not_within_video = true;
@@ -162,7 +171,9 @@ const disablePA = () => {
         window.removeEventListener('keydown', keyboardAction, true);
         document.removeEventListener('fullscreenchange', detectFullscreenChange, true);
         document.removeEventListener('webkitfullscreenchange', detectFullscreenChange, true);
-        pa.removeEventListener('volumechange', detectVolumechangeChange, true);
+        pa.removeEventListener('volumechange', detectVolumeChange, true);
+        pa.removeEventListener('play', detectPlayPuaseChange, true);
+        pa.removeEventListener('pause', detectPlayPuaseChange, true);
         pa.removeEventListener('progress', unstuck, true);
 
         chrome.runtime.sendMessage({ target: 'bg', msg: 'action', value: 'off' });
@@ -175,12 +186,14 @@ const enablePA = (video) => {
     window.addEventListener('keydown', keyboardAction, true);
     document.addEventListener('fullscreenchange', detectFullscreenChange, true);
     document.addEventListener('webkitfullscreenchange', detectFullscreenChange, true);
-    pa.addEventListener('volumechange', detectVolumechangeChange, true);
+    pa.addEventListener('volumechange', detectVolumeChange, true);
+    pa.addEventListener('play', detectPlayPuaseChange, true);
+    pa.addEventListener('pause', detectPlayPuaseChange, true);
     pa.addEventListener('progress', unstuck, true);
     
     setTimeout(() => {
         chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'on'});
-        console.log('PA has been enabled/updated');
+        console.log('[Player Assistant]: PA has been enabled/updated.');
     }, timeout);
 }
 
@@ -195,6 +208,7 @@ let volume_offset = 0;
 const timeout = 300;
 let fullscreen_timer = null;
 let mute_timer = null;
+let play_pause_timer = null;
 
 // receive msg('ask'/'change offset') from popup
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
@@ -215,7 +229,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
         else if (req.for == 'speed_btn') speed_offset = req.value;
         else volume_offset = req.value;
     }
-    else console.log('PA received an unknown request.');
+    else console.log('[Player Assistant]: PA received an unknown request.');
 })
 
 chrome.storage.local.get({ // init offset

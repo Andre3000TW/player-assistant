@@ -1,3 +1,5 @@
+## v1.1.4.2
++ Bug fix for Youtube play/pause issue
 ## v1.1.4.1
 + Netflix caption toggle bug fixes
 ## v1.1.4
