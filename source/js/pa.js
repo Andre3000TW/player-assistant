@@ -151,7 +151,7 @@ const checkClickedElement = (event) => {
                 disablePA();
                 enablePA(video);
             }
-            else console.log('Clicked element is within video scope.');
+            else console.log('[Player Assistant]: Clicked element is within video scope.');
             break;
         }
         else is_last_mouse_pos_not_within_video = true;
@@ -193,7 +193,7 @@ const enablePA = (video) => {
     
     setTimeout(() => {
         chrome.runtime.sendMessage({target: 'bg', msg: 'action', value: 'on'});
-        console.log('PA has been enabled/updated');
+        console.log('[Player Assistant]: PA has been enabled/updated.');
     }, timeout);
 }
 
@@ -229,7 +229,7 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
         else if (req.for == 'speed_btn') speed_offset = req.value;
         else volume_offset = req.value;
     }
-    else console.log('PA received an unknown request.');
+    else console.log('[Player Assistant]: PA received an unknown request.');
 })
 
 chrome.storage.local.get({ // init offset

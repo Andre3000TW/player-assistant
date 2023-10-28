@@ -75,7 +75,7 @@ const keyboardAction = (event) => { // #functions = 7
                     next_btn.click();
                 }
                 catch (exception) {
-                    console.log('No next episode or button has not been loaded.');
+                    console.log('[Player Assistant]: No next episode or button has not been loaded.');
                 }
                 break;
             /***** switch text track *****/
@@ -174,7 +174,7 @@ window.addEventListener("message", (event) => {
         else if (event.data.for == 'speed_btn') speed_offset = event.data.value;
         else volume_offset = event.data.value;
     }
-    else console.log('PA4NF received an unknown request.');
+    else console.log('[Player Assistant]: PA4NF received an unknown request.');
 }, false);
 
 window.postMessage({ target: 'inject', msg: 'init' }, "*"); // init offset

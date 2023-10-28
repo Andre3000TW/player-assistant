@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((req, sender) => {
             chrome.action.setPopup({popup: '', tabId: sender.tab.id});
             chrome.action.setIcon({path: {"16": "../images/action_off.png"}, tabId: sender.tab.id})
         }
-        else console.log('BG received an unknown action request.');
+        else console.log('[Player Assistant]: BG received an unknown action request.');
     }
-    else console.log('BG received an unknown request.');
+    else console.log('[Player Assistant]: BG received an unknown request.');
 })
